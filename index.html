@@ -420,8 +420,11 @@ body{-webkit-tap-highlight-color:transparent}
    Safari en iPhone dibuja corridos los elementos que se animan mientras se hace scroll. */
 @media (hover:none) and (pointer:coarse){
   *,*::before,*::after{animation:none!important;transition:none!important}
-  .js .rv,.js .rv:not(.in),.js .rv.in{opacity:1!important;transform:none!important;clip-path:none!important;filter:none!important}
-  .js .split .ch{transform:none!important}
+  /* Paso 1: apariciones solo con fundido (sin mover ni escalar) */
+  .js .rv,.js .rv.in{opacity:1;transform:none!important;clip-path:none!important;filter:none!important;transition:opacity .8s ease!important;transition-delay:calc(var(--i,0) * 80ms)!important}
+  .js .rv:not(.in){opacity:0!important}
+  .js .split .ch{transform:none!important;opacity:0;transition:opacity .5s ease!important;transition-delay:calc(var(--c) * 22ms + var(--d,0ms))!important}
+  .js .on .split .ch{opacity:1}
   .js .bars i{transform:none!important}
   .js .nope li::after{transform:scaleX(1) rotate(-2deg)!important}
   .js .rail b{transform:none!important}
@@ -1090,7 +1093,8 @@ body{-webkit-tap-highlight-color:transparent}
   function setActive(i){document.body.dataset.t=slides[i].dataset.t;cur.textContent=String(i+1).padStart(2,'0');dotBtns.forEach((b,j)=>{b.classList.toggle('on',j===i);b.setAttribute('aria-current',j===i?'true':'false')});if(i>0)document.getElementById('hint').classList.add('gone');}
   function go(i){i=Math.max(0,Math.min(slides.length-1,i));slides[i].scrollIntoView({behavior:RM?'auto':'smooth',block:'start'});}
 
-  const reveal=s=>{if(s.classList.contains('on'))return;s.classList.add('on');s.querySelectorAll('.rv').forEach(el=>el.classList.add('in'));s.querySelectorAll('[data-count]').forEach(countUp);s.dispatchEvent(new CustomEvent('slidein'));};
+  const rvIO=MOB&&'IntersectionObserver' in window&&new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');rvIO.unobserve(e.target);}}),{rootMargin:'0px 0px -8% 0px'});
+  const reveal=s=>{if(s.classList.contains('on'))return;s.classList.add('on');s.querySelectorAll('.rv').forEach(el=>{if(rvIO&&s.id!=='inicio')rvIO.observe(el);else el.classList.add('in');});s.querySelectorAll('[data-count]').forEach(countUp);s.dispatchEvent(new CustomEvent('slidein'));};
   if('IntersectionObserver' in window){
     const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)reveal(e.target)}),MOB?{threshold:0,rootMargin:'0px 0px -15% 0px'}:{threshold:.25});
     slides.forEach(s=>io.observe(s));
@@ -1103,7 +1107,7 @@ body{-webkit-tap-highlight-color:transparent}
 
   function countUp(el){
     const to=+el.dataset.count,pre=el.dataset.prefix||'',fmt=n=>n.toLocaleString('es-AR');
-    if(RM||TOUCH){el.textContent=pre+fmt(to);return;}
+    if(RM){el.textContent=pre+fmt(to);return;}
     const t0=performance.now()+500,dur=1800;
     (function tick(t){const p=Math.min(1,Math.max(0,(t-t0)/dur)),e=1-Math.pow(1-p,4);el.textContent=pre+fmt(Math.round(to*e));if(p<1)requestAnimationFrame(tick);})(performance.now());
   }
