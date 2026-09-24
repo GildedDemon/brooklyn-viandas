@@ -409,10 +409,10 @@ body{-webkit-tap-highlight-color:transparent}
 @media (max-width:760px), (max-height:500px) and (pointer:coarse){
   .dots,.hint{display:none}
   /* Barra superior: fondo del color de la sección + contador compacto */
-  .topbar{padding:calc(env(safe-area-inset-top,0px) + 10px) 16px 10px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:color .5s var(--ease),background .5s var(--ease)}
-  body[data-t="blue"] .topbar{background:rgba(44,71,144,.92)}
-  body[data-t="navy"] .topbar{background:rgba(28,48,83,.92)}
-  body[data-t="white"] .topbar{background:rgba(255,255,255,.92)}
+  .topbar{padding:calc(env(safe-area-inset-top,0px) + 10px) 16px 10px;transition:color .5s var(--ease),background .5s var(--ease)}
+  body[data-t="blue"] .topbar{background:var(--azul)}
+  body[data-t="navy"] .topbar{background:var(--navy)}
+  body[data-t="white"] .topbar{background:#fff}
   .topbar .mk-h{width:112px}
   .btn-ghost{display:none}
   .counter{display:flex;font-size:13px}
@@ -557,6 +557,14 @@ body{-webkit-tap-highlight-color:transparent}
   .bcard:not(.breakfast){display:grid;grid-template-columns:52px 1fr;column-gap:16px;row-gap:6px;align-items:start}
   .bcard:not(.breakfast) .bub{grid-row:1/3}
   .bcard:not(.breakfast) h3{align-self:end}
+}
+/* Celulares y tablets: las apariciones son solo un fundido. Safari en iOS dibuja corridas las capas
+   que se mueven/escalan mientras se hace scroll, y los elementos quedaban superpuestos */
+@media (hover:none) and (pointer:coarse){
+  .rv,.rv:not(.in),.rv.in{transform:none!important;clip-path:none!important;filter:none!important;transition:opacity .7s ease!important;transition-delay:calc(var(--i,0) * 70ms)!important}
+  .split .ch{transform:none;opacity:0;transition:opacity .6s ease;transition-delay:calc(var(--c) * 18ms)}
+  .on .split .ch{opacity:1}
+  .browser{transform:none}
 }
 /* En pantallas táctiles el :hover queda "pegado" al tocar: se neutraliza en botones y links */
 @media (hover:none){
