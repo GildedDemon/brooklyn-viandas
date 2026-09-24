@@ -396,7 +396,18 @@ body[data-t="white"] .dots button{color:var(--azul)}
 /* =========== ADAPTACIÓN A CELULARES =========== */
 html{-webkit-text-size-adjust:100%}
 body{-webkit-tap-highlight-color:transparent}
-@media (max-width:760px){
+/* Slide 7 en tablets / notebooks chicas: la ecuación siempre en una sola fila */
+@media (min-width:761px) and (max-width:1100px){
+  .eq{flex-wrap:nowrap;gap:clamp(6px,1.4vw,18px)}
+  .eq-item{width:auto;flex:1 1 0;min-width:0}
+  .eq-item .disc{width:clamp(90px,11vw,130px)}
+  .eq-item h3{font-size:clamp(19px,2.2vw,26px)}
+  .eq-item p{font-size:14px}
+  .op{font-size:clamp(34px,4vw,56px);margin-bottom:70px}
+}
+.weight-in b{white-space:nowrap}
+@media (max-width:760px), (max-height:500px) and (pointer:coarse){
+  .dots,.hint{display:none}
   /* Barra superior: fondo del color de la sección + contador compacto */
   .topbar{padding:calc(env(safe-area-inset-top,0px) + 10px) 16px 10px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:color .5s var(--ease),background .5s var(--ease)}
   body[data-t="blue"] .topbar{background:rgba(44,71,144,.92)}
@@ -938,7 +949,7 @@ html:not(.js) .dots,html:not(.js) .hint,html:not(.js) .btn-ghost,html:not(.js) .
 <script>
 (function(){
   const RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const MOB = window.matchMedia('(max-width:760px)').matches;
+  const MOB = window.matchMedia('(max-width:760px), (max-height:500px) and (pointer:coarse)').matches;
   const slides = [...document.querySelectorAll('.slide')];
   const dots = document.getElementById('dots');
   const cur = document.getElementById('cur');
